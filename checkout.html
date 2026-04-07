@@ -1,111 +1,56 @@
 <!DOCTYPE html>
-
 <html lang="fr">
-
 <head>
-
     <meta charset="UTF-8">
-
     <title>Paiement Sécurisé | XonoHub</title>
-
     <link rel="stylesheet" href="style.css">
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-
     <style>
-
         .checkout-container { max-width: 500px; margin: 50px auto; background: #1c1e26; padding: 30px; border-radius: 15px; border: 1px solid #3498db; }
-
         .item-summary { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center; }
-
         .payment-form input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #333; background: #0d0e12; color: white; box-sizing: border-box; }
-
         .secure-notice { font-size: 12px; color: #666; text-align: center; margin-top: 20px; }
-
     </style>
-
 </head>
-
 <body style="background: #0d0e12; color: white; font-family: 'Poppins';">
 
-
-
     <div class="checkout-container">
-
         <h2 style="text-align: center;">Finaliser la commande</h2>
-
         
-
         <div class="item-summary">
-
             <p style="color: #3498db; font-size: 14px; margin: 0;">Produit sélectionné :</p>
-
             <h3 id="display-item">Chargement...</h3>
-
             <div style="font-size: 24px; font-weight: 800; color: #2ecc71;" id="display-price">0.00€</div>
-
         </div>
 
-
-
         <form class="payment-form" id="payment-form">
-
             <label>Nom sur la carte</label>
-
             <input type="text" placeholder="Jean Dupont" required>
-
             
-
             <label>Numéro de carte</label>
-
             <input type="text" placeholder="1234 5678 9101 1121" required>
-
             
-
             <div style="display: flex; gap: 10px;">
-
                 <input type="text" placeholder="MM/YY" style="width: 50%;">
-
                 <input type="text" placeholder="CVC" style="width: 50%;">
-
             </div>
 
-
-
             <button type="submit" class="btn-buy" style="margin-top: 20px;">PAYER MAINTENANT</button>
-
         </form>
 
-
-
         <p class="secure-notice">🔒 Paiement sécurisé par cryptage SSL 256-bit</p>
-
     </div>
 
-
-
     <script>
-
         // Récupérer les infos de l'URL
-
         const params = new URLSearchParams(window.location.search);
-
         document.getElementById('display-item').innerText = params.get('item') || "Produit";
-
         document.getElementById('display-price').innerText = (params.get('price') || "0") + "€";
 
-
-
         document.getElementById('payment-form').onsubmit = function(e) {
-
             e.preventDefault();
-
             alert("Merci ! Dans une version réelle, vous seriez redirigé vers Stripe/PayPal pour valider les 5€.");
-
         };
-
     </script>
-
 </body>
-
 </html>
