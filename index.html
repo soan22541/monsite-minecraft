@@ -48,25 +48,20 @@
                             <input type="password" id="login-pass" placeholder="••••••••">
                         </div>
                     </div>
-                    <button class="btn-submit-auth" onclick="handleLogin()">Identifiez-vous</button>
+                    <button class="btn-submit-auth" onclick="handleLogin()">Connexion</button>
                 </div>
-                <p class="auth-footer" onclick="closeEverything()">Annuler</p>
+                <p class="auth-footer" style="cursor:pointer; margin-top:20px;" onclick="closeEverything()">Annuler</p>
             </div>
 
             <div id="auth-step-2" class="auth-card" style="display:none;">
                 <h1>Créer un compte</h1>
                 <div class="input-group full">
-                    <label>Choisissez un nom d'utilisateur</label>
-                    <input type="text" id="reg-user" placeholder="Nom d'utilisateur">
-                    <span id="user-error" class="error-msg"></span>
+                    <label>Nom d'utilisateur Minecraft</label>
+                    <input type="text" id="reg-user" placeholder="Ex: sosotag">
                 </div>
                 <div class="check-group">
                     <input type="checkbox" id="check-tos">
                     <label for="check-tos">J'accepte les conditions d'utilisation</label>
-                </div>
-                <div class="check-group">
-                    <input type="checkbox" id="check-data">
-                    <label for="check-data">J'accepte que mes données soient stockées</label>
                 </div>
                 <div class="auth-nav">
                     <button class="btn-text" onclick="showAuthStep(1)">X Annuler</button>
@@ -75,18 +70,14 @@
             </div>
 
             <div id="auth-step-3" class="auth-card" style="display:none;">
-                <h1>Créer votre compte</h1>
+                <h1>Sécurité</h1>
                 <div class="input-group full">
                     <label>Mot de passe</label>
                     <input type="password" id="reg-pass" placeholder="••••••••••••">
                 </div>
-                <div class="input-group full">
-                    <label>Retapez le mot de passe</label>
-                    <input type="password" id="reg-pass-confirm" placeholder="••••••••••••">
-                </div>
                 <div class="auth-nav">
-                    <button class="btn-text" onclick="showAuthStep(2)"> < Précédent</button>
-                    <button class="btn-submit-final" onclick="handleRegister()">Créer un compte</button>
+                    <button class="btn-text" onclick="showAuthStep(2)">Précédent</button>
+                    <button class="btn-submit-final" onclick="handleRegister()">Terminer</button>
                 </div>
             </div>
         </div>
@@ -114,9 +105,9 @@
         <div class="smp-center-wrapper">
             <div class="smp-layout">
                 <div class="skin-side">
-                    <img src="https://mc-heads.net/body/Steve" id="player-skin">
-                    <h2 id="display-username">Joueur</h2>
-                    <div class="status-badge">● EN LIGNE</div>
+                    <img src="https://mc-heads.net/body/sosotag" id="player-skin">
+                    <h2 id="display-username">sosotag</h2>
+                    <span class="status-badge">● EN LIGNE</span>
                 </div>
                 <div class="stats-side">
                     <div class="stat-group">
@@ -146,19 +137,6 @@
         </div>
     </section>
 
-    <section id="kits-section" class="overlay-section">
-        <div class="kit-page-container">
-            <button class="nav-arrow" onclick="changePage(-1)">&#10094;</button>
-            <div class="kit-display" id="kit-content">
-                <img id="kit-img" src="">
-                <h2 id="kit-title"></h2>
-                <div class="kit-desc-box"><p id="kit-desc"></p></div>
-                <p class="page-counter"><span id="current-p">1</span> / 8</p>
-            </div>
-            <button class="nav-arrow" onclick="changePage(1)">&#10095;</button>
-        </div>
-    </section>
-
     <section id="shop-section" class="overlay-section">
         <div class="shop-wrapper">
             <h2 class="shop-main-title">Boutique Officielle</h2>
@@ -168,10 +146,10 @@
                     <div class="price">5.00€</div>
                     <ul class="features">
                         <li>Pseudo en Vert</li>
-                        <li>Accès au fly aux spawn</li>
+                        <li>Accès au fly au spawn</li>
                         <li>Kit Lvl-2</li>
                     </ul>
-                    <button class="btn-buy" onclick="handlePurchase('Grade Premium', 5.00)">Acheter</button>
+                    <button class="btn-buy" onclick="window.location.href='checkout.html?item=Grade%20Premium&price=5'">Acheter</button>
                 </div>
 
                 <div class="shop-card popular">
@@ -180,10 +158,10 @@
                     <div class="price">10.00€</div>
                     <ul class="features">
                         <li>Tous les avantages Premium</li>
-                        <li>Accès a l'autentification instentanée</li>
+                        <li>Authentification instantanée</li>
                         <li>Pseudo en Rouge</li>
                     </ul>
-                    <button class="btn-buy" onclick="handlePurchase('Grade VIP+', 10.00)">Acheter</button>
+                    <button class="btn-buy" onclick="window.location.href='checkout.html?item=Grade%20VIP+&price=10'">Acheter</button>
                 </div>
 
                 <div class="shop-card">
@@ -193,9 +171,8 @@
                         <li>Tous les avantages VIP+</li>
                         <li>Grade à vie</li>
                         <li>Pseudo en Violet</li>
-                        <li>3 cosmetic gratuit de votre choix</li>
                     </ul>
-                    <button class="btn-buy" onclick="handlePurchase('Grade ÉLITE', 20.00)">Acheter</button>
+                    <button class="btn-buy" onclick="window.location.href='checkout.html?item=Grade%20Elite&price=20'">Acheter</button>
                 </div>
             </div>
             <p class="hint">Appuyez sur <span>ECHAP</span> pour retourner au Hub</p>
