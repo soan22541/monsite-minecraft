@@ -2,10 +2,11 @@
 :root {
     --bg: #0d0e12;
     --primary: #3498db;
-    --accent: #e74c3c; /* Rouge */
+    --accent: #e74c3c;
     --card: #1c1e26;
     --text: #ffffff;
     --success: #2ecc71;
+    --box-bg: #111217;
 }
 
 body { 
@@ -13,7 +14,6 @@ body {
     font-family: 'Poppins', sans-serif; 
     background: var(--bg); 
     color: var(--text); 
-    /* Modifié : On permet le scroll vertical si nécessaire */
     overflow-x: hidden;
     overflow-y: auto;
     min-height: 100vh;
@@ -27,8 +27,8 @@ nav {
     padding: 15px 50px; 
     background: rgba(0,0,0,0.9); 
     border-bottom: 2px solid var(--primary); 
-    z-index: 10; 
-    position: sticky; /* Sticky pour garder la nav en haut au scroll */
+    z-index: 1000; 
+    position: sticky; 
     top: 0;
 }
 
@@ -49,12 +49,7 @@ nav {
     transition: 0.3s; 
 }
 
-/* Zone Boutons Compte & Logout */
-.auth-buttons {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+.auth-buttons { display: flex; align-items: center; gap: 10px; }
 
 .btn-account { 
     background: var(--accent); 
@@ -64,24 +59,6 @@ nav {
     border-radius: 8px; 
     font-weight: bold; 
     cursor: pointer; 
-    transition: 0.3s;
-}
-
-.btn-logout {
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-family: 'Poppins', sans-serif;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-.btn-logout:hover {
-    background-color: #cc0000;
-    transform: scale(1.05);
 }
 
 /* --- HUB GRID --- */
@@ -106,97 +83,129 @@ nav {
     transition: 0.3s; 
 }
 
-.card:hover { 
-    transform: translateY(-10px); 
-    border-color: var(--primary); 
+.card:hover { transform: translateY(-10px); border-color: var(--primary); }
+
+/* --- DESIGN DU PROFIL SMP (CORRECTION) --- */
+.smp-center-wrapper {
+    max-width: 900px;
+    margin: 5% auto;
+    text-align: center;
 }
 
-/* --- PAGE DE PAIEMENT (CHECKOUT) --- */
-/* Ajouté pour corriger ton problème de scroll sur le formulaire */
-.checkout-container { 
-    max-width: 500px; 
-    margin: 50px auto; 
-    background: var(--card); 
-    padding: 30px; 
-    border-radius: 15px; 
-    border: 1px solid var(--primary);
-    height: auto; /* La boîte s'adapte au contenu */
-    margin-bottom: 100px; /* Espace en bas pour scroller confortablement */
+.smp-layout {
+    display: flex; /* Aligne le skin et les stats côte à côte */
+    background: var(--card);
+    border-radius: 25px;
+    border: 1px solid #333;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    text-align: left;
 }
 
-.payment-form input { 
-    width: 100%; 
-    padding: 12px; 
-    margin: 10px 0; 
-    border-radius: 5px; 
-    border: 1px solid #333; 
-    background: #0d0e12; 
-    color: white; 
-    box-sizing: border-box; 
+/* Colonne Skin */
+.skin-side {
+    background: #16171b;
+    padding: 40px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-right: 1px solid #333;
 }
 
-/* --- AUTHENTIFICATION (STYLE ATERNOS) --- */
-.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; overflow-y: auto; }
-
-.modal-auth-container { 
-    width: 100%; 
-    max-width: 600px; 
-    margin: 8% auto; 
-    background: #2c3e50; 
-    border-radius: 5px; 
-    padding: 40px; 
-    color: white; 
-    text-align: center; 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+.skin-side img {
+    height: 300px;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+    margin-bottom: 20px;
 }
 
-/* --- BOUTIQUE --- */
-.shop-wrapper { max-width: 1200px; margin: 50px auto; text-align: center; }
+.skin-side h2 { margin: 10px 0; font-size: 28px; }
 
-.shop-main-title { font-size: 40px; font-weight: 900; margin-bottom: 50px; text-transform: uppercase; }
-
-.shop-grid { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
-
-.shop-card { 
-    background: #16171b; 
-    border: 1px solid #333; 
-    border-radius: 20px; 
-    padding: 40px 30px; 
-    width: 300px; 
-    position: relative; 
-    transition: 0.3s ease; 
+.status-badge {
+    background: var(--success);
+    color: black;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 800;
 }
 
-.shop-card.popular { 
-    border: 2px solid var(--primary); 
-    box-shadow: 0 0 30px rgba(52, 152, 219, 0.2); 
-    transform: scale(1.05); 
+/* Colonne Statistiques */
+.stats-side {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
 }
 
-.btn-buy { 
-    background: var(--primary); 
-    color: white; 
-    border: none; 
-    width: 100%; 
-    padding: 15px; 
-    border-radius: 10px; 
-    font-weight: 800; 
-    font-size: 16px; 
-    cursor: pointer; 
-    transition: 0.3s; 
+.stat-group h3 {
+    font-size: 14px;
+    color: #888;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
 }
 
-/* --- AUTRES SECTIONS --- */
+/* Coordonnées en boîtes */
+.coord-grid { display: flex; gap: 15px; }
+
+.coord-grid .box {
+    background: #000;
+    flex: 1;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #222;
+}
+
+.coord-grid .box span {
+    display: block;
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+/* Inventaire */
+.inventory-grid {
+    display: flex;
+    gap: 10px;
+}
+
+.slot {
+    width: 45px;
+    height: 45px;
+    background: #000;
+    border: 1px solid #333;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slot img { width: 30px; }
+
+/* Argent */
+.money-box {
+    background: #000;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px dashed #f1c40f;
+    color: #f1c40f;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+/* --- OVERLAY SECTIONS --- */
 .overlay-section { 
     display: none; 
     position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    background: rgba(10,11,14,0.98); 
-    z-index: 100; 
-    padding: 60px; 
-    box-sizing: border-box; 
-    overflow-y: auto; /* Permet de scroller dans les overlays (Kits, Profil...) */
+    top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(0,0,0,0.95); 
+    z-index: 2000; 
+    overflow-y: auto;
+    padding: 40px;
 }
+
+.hint { margin-top: 30px; color: #666; font-size: 14px; }
+.hint span { background: #333; padding: 2px 8px; border-radius: 4px; color: white; }
