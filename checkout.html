@@ -6,10 +6,51 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        .checkout-container { max-width: 500px; margin: 50px auto; background: #1c1e26; padding: 30px; border-radius: 15px; border: 1px solid #3498db; }
-        .item-summary { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center; }
-        .payment-form input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #333; background: #0d0e12; color: white; box-sizing: border-box; }
+        .checkout-container { 
+            max-width: 500px; 
+            margin: 50px auto; 
+            background: #1c1e26; 
+            padding: 30px; 
+            border-radius: 15px; 
+            border: 1px solid #3498db; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .item-summary { 
+            background: rgba(0,0,0,0.3); 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin-bottom: 20px; 
+            text-align: center; 
+        }
+        .payment-form label {
+            font-size: 14px;
+            color: #aaa;
+            display: block;
+            margin-top: 15px;
+        }
+        .payment-form input { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 5px 0; 
+            border-radius: 5px; 
+            border: 1px solid #333; 
+            background: #0d0e12; 
+            color: white; 
+            box-sizing: border-box; 
+            outline: none;
+        }
+        .payment-form input:focus {
+            border-color: #3498db;
+        }
         .secure-notice { font-size: 12px; color: #666; text-align: center; margin-top: 20px; }
+        .back-link { 
+            display: block; 
+            text-align: center; 
+            margin-top: 15px; 
+            color: #3498db; 
+            text-decoration: none; 
+            font-size: 13px;
+        }
     </style>
 </head>
 <body style="background: #0d0e12; color: white; font-family: 'Poppins';">
@@ -28,28 +69,45 @@
             <input type="text" placeholder="Jean Dupont" required>
             
             <label>Numéro de carte</label>
-            <input type="text" placeholder="1234 5678 9101 1121" required>
+            <input type="text" maxlength="19" placeholder="1234 5678 9101 1121" required>
             
             <div style="display: flex; gap: 10px;">
-                <input type="text" placeholder="MM/YY" style="width: 50%;">
-                <input type="text" placeholder="CVC" style="width: 50%;">
+                <div style="flex: 1;">
+                    <label>Expiration</label>
+                    <input type="text" placeholder="MM/YY" maxlength="5" required>
+                </div>
+                <div style="flex: 1;">
+                    <label>CVC</label>
+                    <input type="text" placeholder="123" maxlength="3" required>
+                </div>
             </div>
 
-            <button type="submit" class="btn-buy" style="margin-top: 20px;">PAYER MAINTENANT</button>
+            <button type="submit" class="btn-buy" style="margin-top: 25px; cursor: pointer;">PAYER MAINTENANT</button>
         </form>
 
+        <a href="index.html" class="back-link">← Retour au Hub</a>
         <p class="secure-notice">🔒 Paiement sécurisé par cryptage SSL 256-bit</p>
     </div>
 
     <script>
-        // Récupérer les infos de l'URL
+        // Lecture des paramètres passés par le script.js (item et price)
         const params = new URLSearchParams(window.location.search);
-        document.getElementById('display-item').innerText = params.get('item') || "Produit";
-        document.getElementById('display-price').innerText = (params.get('price') || "0") + "€";
+        const itemName = params.get('item');
+        const itemPrice = params.get('price');
 
+        // Affichage dynamique
+        if (itemName) {
+            document.getElementById('display-item').innerText = itemName;
+        }
+        if (itemPrice) {
+            document.getElementById('display-price').innerText = itemPrice + "€";
+        }
+
+        // Simulation de validation
         document.getElementById('payment-form').onsubmit = function(e) {
             e.preventDefault();
-            alert("Merci ! Dans une version réelle, vous seriez redirigé vers Stripe/PayPal pour valider les 5€.");
+            alert("Merci pour votre achat de " + (itemName || "grade") + " ! Votre transaction est en cours de traitement.");
+            window.location.href = "index.html"; // Retour au hub après achat
         };
     </script>
 </body>
