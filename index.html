@@ -14,7 +14,10 @@
         <div class="nav-center">
             <button class="btn-join-nav" onclick="openModal('join-modal')">REJOINDRE LE SERVEUR</button>
         </div>
-        <button id="login-btn" class="btn-account" onclick="openModal('login-modal')">MON COMPTE</button>
+        <div class="auth-buttons">
+            <button id="login-btn" class="btn-account" onclick="openModal('login-modal')">MON COMPTE</button>
+            <button id="logout-btn" class="btn-logout" onclick="handleLogout()" style="display:none;">DÉCONNEXION</button>
+        </div>
     </nav>
 
     <main class="hub" id="main-hub">
@@ -111,7 +114,7 @@
         <div class="smp-center-wrapper">
             <div class="smp-layout">
                 <div class="skin-side">
-                    <img src="https://mc-heads.net/body/player/Steve" id="player-skin">
+                    <img src="https://mc-heads.net/body/Steve" id="player-skin">
                     <h2 id="display-username">Joueur</h2>
                     <div class="status-badge">● EN LIGNE</div>
                 </div>
@@ -156,49 +159,47 @@
         </div>
     </section>
 
-<section id="shop-section" class="overlay-section">
-    <div class="shop-wrapper">
-        <h2 class="shop-main-title">Boutique Officielle</h2>
-        <div class="shop-grid">
-            
-            <div class="shop-card">
-                <h3>Grade VIP</h3>
-                <div class="price">5.00€</div>
-                <ul class="features">
-                    <li>Pseudo en bleu</li>
-                    <li>Accès au /fly</li>
-                    <li>Kit hebdomadaire</li>
-                </ul>
-                <button class="btn-buy" onclick="handlePurchase('Grade VIP', 5.00)">Acheter</button>
-            </div>
+    <section id="shop-section" class="overlay-section">
+        <div class="shop-wrapper">
+            <h2 class="shop-main-title">Boutique Officielle</h2>
+            <div class="shop-grid">
+                <div class="shop-card">
+                    <h3>Grade VIP</h3>
+                    <div class="price">5.00€</div>
+                    <ul class="features">
+                        <li>Pseudo en bleu</li>
+                        <li>Accès au /fly</li>
+                        <li>Kit hebdomadaire</li>
+                    </ul>
+                    <button class="btn-buy" onclick="handlePurchase('Grade VIP', 5.00)">Acheter</button>
+                </div>
 
-            <div class="shop-card popular">
-                <div class="popular-badge">Populaire</div>
-                <h3>Grade VIP+</h3>
-                <div class="price">10.00€</div>
-                <ul class="features">
-                    <li>Tous les avantages VIP</li>
-                    <li>Accès aux montures</li>
-                    <li>Priorité file d'attente</li>
-                </ul>
-                <button class="btn-buy" onclick="handlePurchase('Grade VIP+', 10.00)">Acheter</button>
-            </div>
+                <div class="shop-card popular">
+                    <div class="popular-badge">Populaire</div>
+                    <h3>Grade VIP+</h3>
+                    <div class="price">10.00€</div>
+                    <ul class="features">
+                        <li>Tous les avantages VIP</li>
+                        <li>Accès aux montures</li>
+                        <li>Priorité file d'attente</li>
+                    </ul>
+                    <button class="btn-buy" onclick="handlePurchase('Grade VIP+', 10.00)">Acheter</button>
+                </div>
 
-            <div class="shop-card">
-                <h3>Grade ÉLITE</h3>
-                <div class="price">20.00€</div>
-                <ul class="features">
-                    <li>Tous les avantages VIP+</li>
-                    <li>Grade à vie</li>
-                    <li>Accès serveur de test</li>
-                </ul>
-                <button class="btn-buy" onclick="handlePurchase('Grade ÉLITE', 20.00)">Acheter</button>
+                <div class="shop-card">
+                    <h3>Grade ÉLITE</h3>
+                    <div class="price">20.00€</div>
+                    <ul class="features">
+                        <li>Tous les avantages VIP+</li>
+                        <li>Grade à vie</li>
+                        <li>Accès serveur de test</li>
+                    </ul>
+                    <button class="btn-buy" onclick="handlePurchase('Grade ÉLITE', 20.00)">Acheter</button>
+                </div>
             </div>
-
+            <p class="hint">Appuyez sur <span>ECHAP</span> pour retourner au Hub</p>
         </div>
-        <p class="hint">Appuyez sur <span>ECHAP</span> pour retourner au Hub</p>
-    </div>
-</section>
+    </section>
 
     <script src="script.js"></script>
 </body>
