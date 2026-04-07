@@ -6,7 +6,6 @@
     --card: #1c1e26;
     --text: #ffffff;
     --success: #2ecc71;
-    --box-bg: #111217;
 }
 
 body { 
@@ -14,9 +13,7 @@ body {
     font-family: 'Poppins', sans-serif; 
     background: var(--bg); 
     color: var(--text); 
-    overflow-x: hidden;
-    overflow-y: auto;
-    min-height: 100vh;
+    overflow: hidden; 
 }
 
 /* --- NAVIGATION --- */
@@ -27,14 +24,12 @@ nav {
     padding: 15px 50px; 
     background: rgba(0,0,0,0.9); 
     border-bottom: 2px solid var(--primary); 
-    z-index: 1000; 
-    position: sticky; 
-    top: 0;
+    z-index: 10; 
+    position: relative; 
 }
 
 .logo { font-weight: 800; font-size: 24px; }
 .logo span { color: var(--primary); }
-
 .nav-center { flex-grow: 1; text-align: center; }
 
 .btn-join-nav { 
@@ -59,7 +54,21 @@ nav {
     border-radius: 8px; 
     font-weight: bold; 
     cursor: pointer; 
+    transition: 0.3s;
 }
+
+.btn-logout {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-logout:hover { background-color: #cc0000; transform: scale(1.05); }
 
 /* --- HUB GRID --- */
 .grid-container { 
@@ -85,127 +94,54 @@ nav {
 
 .card:hover { transform: translateY(-10px); border-color: var(--primary); }
 
-/* --- DESIGN DU PROFIL SMP (CORRECTION) --- */
-.smp-center-wrapper {
-    max-width: 900px;
-    margin: 5% auto;
-    text-align: center;
+/* --- AUTH MODAL (STYLE ATERNOS) --- */
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; }
+
+.modal-auth-container { 
+    width: 100%; 
+    max-width: 600px; 
+    margin: 8% auto; 
+    background: #2c3e50; 
+    border-radius: 5px; 
+    padding: 40px; 
+    text-align: center; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
 }
 
-.smp-layout {
-    display: flex; /* Aligne le skin et les stats côte à côte */
-    background: var(--card);
-    border-radius: 25px;
-    border: 1px solid #333;
-    overflow: hidden;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    text-align: left;
+.btn-main-auth { 
+    background: #00b0ff; color: white; border: none; width: 100%; padding: 20px; 
+    font-size: 24px; font-weight: bold; border-radius: 5px; cursor: pointer; 
 }
 
-/* Colonne Skin */
-.skin-side {
-    background: #16171b;
-    padding: 40px;
-    width: 300px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-right: 1px solid #333;
-}
+.auth-separator { display: flex; align-items: center; margin: 20px 0; font-weight: bold; }
+.auth-separator::before, .auth-separator::after { content: ""; flex: 1; height: 2px; background: white; margin: 0 15px; }
 
-.skin-side img {
-    height: 300px;
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
-    margin-bottom: 20px;
-}
+.login-row { display: flex; gap: 10px; align-items: flex-end; justify-content: center; }
+.input-with-icon { background: white; padding: 5px 10px; border-radius: 3px; }
+.input-with-icon input { border: none; color: #333; outline: none; width: 120px; }
 
-.skin-side h2 { margin: 10px 0; font-size: 28px; }
+.btn-submit-auth { background: #00b0ff; border: none; color: white; padding: 12px 20px; border-radius: 3px; font-weight: bold; cursor: pointer; }
 
-.status-badge {
-    background: var(--success);
-    color: black;
-    padding: 5px 15px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 800;
-}
-
-/* Colonne Statistiques */
-.stats-side {
-    flex: 1;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-}
-
-.stat-group h3 {
-    font-size: 14px;
-    color: #888;
-    letter-spacing: 2px;
-    margin-bottom: 15px;
-}
-
-/* Coordonnées en boîtes */
-.coord-grid { display: flex; gap: 15px; }
-
-.coord-grid .box {
-    background: #000;
-    flex: 1;
-    padding: 15px;
-    border-radius: 10px;
-    text-align: center;
-    border: 1px solid #222;
-}
-
-.coord-grid .box span {
-    display: block;
-    color: var(--primary);
-    font-weight: 800;
-    font-size: 12px;
-    margin-bottom: 5px;
-}
-
-/* Inventaire */
-.inventory-grid {
-    display: flex;
-    gap: 10px;
-}
-
-.slot {
-    width: 45px;
-    height: 45px;
-    background: #000;
-    border: 1px solid #333;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.slot img { width: 30px; }
-
-/* Argent */
-.money-box {
-    background: #000;
-    padding: 20px;
-    border-radius: 10px;
-    border: 1px dashed #f1c40f;
-    color: #f1c40f;
-    font-size: 24px;
-    font-weight: 800;
-}
-
-/* --- OVERLAY SECTIONS --- */
+/* --- SECTIONS OVERLAYS --- */
 .overlay-section { 
-    display: none; 
-    position: fixed; 
-    top: 0; left: 0; width: 100%; height: 100%; 
-    background: rgba(0,0,0,0.95); 
-    z-index: 2000; 
-    overflow-y: auto;
-    padding: 40px;
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(10,11,14,0.98); z-index: 100; padding: 60px; box-sizing: border-box; 
 }
 
-.hint { margin-top: 30px; color: #666; font-size: 14px; }
-.hint span { background: #333; padding: 2px 8px; border-radius: 4px; color: white; }
+.smp-layout { 
+    display: flex; gap: 40px; background: var(--card); padding: 40px; 
+    border-radius: 30px; border: 1px solid #444; box-shadow: 0 20px 50px rgba(0,0,0,0.5); margin: auto; max-width: 850px;
+}
+
+.skin-side { text-align: center; border-right: 1px solid #333; padding-right: 40px; }
+.skin-side img { height: 350px; margin-bottom: 15px; }
+.status-badge { background: var(--success); color: #000; font-size: 10px; font-weight: 900; padding: 4px 12px; border-radius: 20px; }
+
+.money-box { background: #111; padding: 15px; border-radius: 10px; font-size: 24px; font-weight: 800; color: #f1c40f; border: 1px dashed #f1c40f; }
+
+/* --- BOUTIQUE --- */
+.shop-grid { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-top: 50px; }
+.shop-card { background: #16171b; border: 1px solid #333; border-radius: 20px; padding: 40px 30px; width: 280px; position: relative; transition: 0.3s; }
+.shop-card.popular { border: 2px solid var(--primary); transform: scale(1.05); }
+.shop-card .price { font-size: 35px; font-weight: 900; color: var(--success); margin-bottom: 20px; }
+.btn-buy { background: var(--primary); color: white; border: none; width: 100%; padding: 15px; border-radius: 10px; font-weight: 800; cursor: pointer; }
