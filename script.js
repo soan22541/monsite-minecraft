@@ -1,19 +1,88 @@
-// --- FONCTION DE PRÉ-REMPLISSAGE ---
+// --- VARIABLES GLOBALES ---
+// On récupère l'utilisateur au tout début
+let user = JSON.parse(localStorage.getItem('user')) || null;
+let currentPage = 0;
+
+const kits = [
+    { title: "Crystal PvP", img: "images/crystal.png", desc: "Combat explosif." },
+    { title: "SMP Starter", img: "images/smp.png", desc: "Début de survie." },
+    { title: "Mace Kit", img: "https://minecraft.wiki/images/Mace_JE1_BE1.png", desc: "Attaques lourdes." },
+    { title: "Netherite Sword", img: "https://minecraft.wiki/images/Netherite_Sword_JE2_BE2.png", desc: "Classique." },
+    { title: "Netherite Axe", img: "https://minecraft.wiki/images/Netherite_Axe_JE2_BE2.png", desc: "Brise-bouclier." },
+    { title: "UHC", img: "https://minecraft.wiki/images/Golden_Apple_JE2_BE2.png", desc: "Pas de regen." },
+    { title: "Netherite Pot", img: "https://minecraft.wiki/images/Splash_Potion_of_Healing_JE2_BE2.png", desc: "Potions de soin." },
+    { title: "Diamond Pot", img: "https://minecraft.wiki/images/Diamond_Chestplate_JE3_BE2.png", desc: "Vitesse et diamant." }
+];
+
+// --- INITIALISATION ---
+window.addEventListener('DOMContentLoaded', () => {
+    updateUserData();
+    prefillLoginForm();
+});
+
+// Mémoire : Remplit le champ login au démarrage
 function prefillLoginForm() {
     const lastUser = localStorage.getItem('last_logged_username');
     const loginUserInput = document.getElementById('login-user');
-    
-    console.log("Tentative de pré-remplissage pour :", lastUser); // Debug
-    
     if (lastUser && loginUserInput) {
         loginUserInput.value = lastUser;
-        console.log("Champ rempli avec succès !");
-    } else {
-        console.log("Échec : soit pas d'utilisateur stocké, soit l'ID 'login-user' n'existe pas.");
     }
 }
 
-// --- FONCTION D'INSCRIPTION ---
+// Mise à jour de l'interface (Pseudo + Skin)
+function updateUserData() {
+    if(user) {
+        const loginBtn = document.getElementById('login-btn');
+        const displayUser = document.getElementById('display-username');
+        const playerSkin = document.getElementById('player-skin');
+
+        if(loginBtn) loginBtn.innerText = user.name.toUpperCase();
+        if(displayUser) displayUser.innerText = user.name;
+        if(playerSkin) playerSkin.src = `https://mc-heads.net/body/${user.name}`;
+    }
+}
+
+// --- NAVIGATION ---
+function openModal(id) { 
+    const modal = document.getElementById(id);
+    if(modal) modal.style.display = "block"; 
+}
+
+function showSection(id) {
+    const section = document.getElementById(id);
+    const hub = document.getElementById('main-hub');
+    if(section) {
+        section.style.display = "block";
+        if(hub) hub.style.filter = "blur(10px)";
+        if(id === 'kits-section') updateKitPage();
+    }
+}
+
+function closeEverything() {
+    document.querySelectorAll('.overlay-section, .modal').forEach(el => el.style.display = 'none');
+    const hub = document.getElementById('main-hub');
+    if(hub) hub.style.filter = "none";
+}
+
+document.addEventListener('keydown', (e) => { 
+    if(e.key === "Escape") closeEverything(); 
+});
+
+// --- AUTHENTIFICATION ---
+function showAuthStep(step) {
+    document.getElementById('auth-step-1').style.display = 'none';
+    document.getElementById('auth-step-2').style.display = 'none';
+    document.getElementById('auth-step-3').style.display = 'none';
+    document.getElementById('auth-step-' + step).style.display = 'block';
+}
+
+function validateStep2() {
+    const pseudo = document.getElementById('reg-user').value;
+    if(pseudo.length < 3) { alert("Pseudo trop court !"); return; }
+    if(!document.getElementById('check-tos').checked) { alert("Acceptez les conditions !"); return; }
+    showAuthStep(3);
+}
+
 function handleRegister() {
     const pseudo = document.getElementById('reg-user').value;
     const pass = document.getElementById('reg-pass').value;
@@ -21,18 +90,56 @@ function handleRegister() {
 
     if(pass !== confirm) { alert("Les mots de passe ne correspondent pas"); return; }
     
+    // Sauvegarde du compte
     let accounts = JSON.parse(localStorage.getItem('xono_accounts')) || {};
     accounts[pseudo] = pass;
-    
-    // On enregistre tout
     localStorage.setItem('xono_accounts', JSON.stringify(accounts));
-    localStorage.setItem('user', JSON.stringify({name: pseudo}));
+    
+    // AUTO-CONNEXION ICI
+    const userData = {name: pseudo};
+    localStorage.setItem('user', JSON.stringify(userData));
     localStorage.setItem('last_logged_username', pseudo); 
     
-    console.log("Compte créé et connecté pour :", pseudo);
+    // On force la mise à jour avant de fermer
+    user = userData;
+    updateUserData();
+    closeEverything();
+    alert("Compte créé et connecté !");
+}
 
-    // On s'assure que les données sont bien sauvées avant de recharger
-    setTimeout(() => {
-        location.reload();
-    }, 100); 
+function handleLogin() {
+    const pseudo = document.getElementById('login-user').value;
+    const pass = document.getElementById('login-pass').value;
+    const accounts = JSON.parse(localStorage.getItem('xono_accounts')) || {};
+
+    if(accounts[pseudo] && accounts[pseudo] === pass) {
+        localStorage.setItem('user', JSON.stringify({name: pseudo}));
+        localStorage.setItem('last_logged_username', pseudo);
+        location.reload(); // Recharge pour appliquer partout
+    } else { 
+        alert("Identifiants incorrects"); 
+    }
+}
+
+// --- BOUTIQUE & KITS ---
+function handlePurchase(itemName, price) {
+    if (!user) {
+        alert("Connectez-vous pour acheter !");
+        openModal('login-modal'); 
+        return;
+    }
+    alert(`Redirection vers le paiement pour : ${itemName} (${price}€)`);
+}
+
+function updateKitPage() {
+    const kit = kits[currentPage];
+    document.getElementById('kit-img').src = kit.img;
+    document.getElementById('kit-title').innerText = kit.title;
+    document.getElementById('kit-desc').innerText = kit.desc;
+    document.getElementById('current-p').innerText = currentPage + 1;
+}
+
+function changePage(dir) {
+    currentPage = (currentPage + dir + kits.length) % kits.length;
+    updateKitPage();
 }
