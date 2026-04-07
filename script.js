@@ -16,7 +16,17 @@ const kits = [
 // --- INITIALISATION AU CHARGEMENT ---
 window.onload = () => {
     updateUserData();
+    prefillLoginForm(); // Se souvient de l'identifiant
 };
+
+// Fonction pour pré-remplir le pseudo si déjà connecté auparavant
+function prefillLoginForm() {
+    const lastUser = localStorage.getItem('last_logged_username');
+    const loginUserInput = document.getElementById('login-user');
+    if (lastUser && loginUserInput) {
+        loginUserInput.value = lastUser;
+    }
+}
 
 function updateUserData() {
     if(user) {
@@ -26,11 +36,12 @@ function updateUserData() {
 
         if(loginBtn) loginBtn.innerText = user.name.toUpperCase();
         if(displayUser) displayUser.innerText = user.name;
-        if(playerSkin) playerSkin.src = `https://mc-heads.net/body/player/${user.name}`;
+        // Correction de l'URL du skin pour être plus fiable
+        if(playerSkin) playerSkin.src = `https://mc-heads.net/body/${user.name}`;
     }
 }
 
-// --- SYSTÈME DE NAVIGATION (BOUTONS HUB) ---
+// --- SYSTÈME DE NAVIGATION ---
 function openModal(id) { 
     const modal = document.getElementById(id);
     if(modal) modal.style.display = "block"; 
@@ -53,30 +64,23 @@ function closeEverything() {
     if(hub) hub.style.filter = "none";
 }
 
-// Fermer avec la touche ECHAP
 document.addEventListener('keydown', (e) => { 
     if(e.key === "Escape") closeEverything(); 
 });
 
-// --- SYSTÈME BOUTIQUE & PAIEMENT ---
+// --- SYSTÈME BOUTIQUE ---
 function handlePurchase(itemName, price) {
-    // 1. On vérifie si l'utilisateur est connecté
     if (!user) {
         alert("❌ Erreur : Vous devez être connecté pour acheter un article !");
         openModal('login-modal'); 
         return;
     }
-
-    // 2. Redirection vers la page de paiement
-    // Assure-toi que checkout.html existe dans le même dossier
     window.location.href = `checkout.html?item=${encodeURIComponent(itemName)}&price=${price}&user=${encodeURIComponent(user.name)}`;
 }
 
-// --- SYSTÈME AUTHENTICATION (ATERNOS STYLE) ---
+// --- SYSTÈME AUTHENTICATION (AVEC MÉMOIRE) ---
 function showAuthStep(step) {
-    document.getElementById('auth-step-1').style.display = 'none';
-    document.getElementById('auth-step-2').style.display = 'none';
-    document.getElementById('auth-step-3').style.display = 'none';
+    document.querySelectorAll('[id^="auth-step-"]').forEach(el => el.style.display = 'none');
     document.getElementById('auth-step-' + step).style.display = 'block';
 }
 
@@ -97,7 +101,10 @@ function handleRegister() {
     let accounts = JSON.parse(localStorage.getItem('xono_accounts')) || {};
     accounts[pseudo] = pass;
     localStorage.setItem('xono_accounts', JSON.stringify(accounts));
+    
+    // On connecte direct après inscription
     localStorage.setItem('user', JSON.stringify({name: pseudo}));
+    localStorage.setItem('last_logged_username', pseudo); 
     location.reload();
 }
 
@@ -108,9 +115,10 @@ function handleLogin() {
 
     if(accounts[pseudo] === pass) {
         localStorage.setItem('user', JSON.stringify({name: pseudo}));
+        localStorage.setItem('last_logged_username', pseudo); // Mémorise pour la prochaine fois
         location.reload();
     } else { 
-        alert("Identifiants incorrects"); 
+        alert("Identifiants ou mot de passe incorrects"); 
     }
 }
 
