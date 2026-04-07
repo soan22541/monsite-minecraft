@@ -2,7 +2,6 @@
 let user = JSON.parse(localStorage.getItem('user')) || null;
 let currentPage = 0;
 
-// Base de données des kits
 const kits = [
     { title: "Crystal PvP", img: "images/crystal.png", desc: "Combat explosif." },
     { title: "SMP Starter", img: "images/smp.png", desc: "Début de survie." },
@@ -14,10 +13,10 @@ const kits = [
     { title: "Diamond Pot", img: "https://minecraft.wiki/images/Diamond_Chestplate_JE3_BE2.png", desc: "Vitesse et diamant." }
 ];
 
-// --- INITIALISATION AU CHARGEMENT ---
+// --- INITIALISATION ---
 window.addEventListener('DOMContentLoaded', () => {
-    updateUserData();     
-    prefillLoginForm();   
+    updateUserData();
+    prefillLoginForm();
 });
 
 function prefillLoginForm() {
@@ -69,11 +68,9 @@ function closeEverything() {
     if(hub) hub.style.filter = "none";
 }
 
-document.addEventListener('keydown', (e) => { 
-    if(e.key === "Escape") closeEverything(); 
-});
+document.addEventListener('keydown', (e) => { if(e.key === "Escape") closeEverything(); });
 
-// --- SYSTEME D'AUTHENTIFICATION ---
+// --- AUTHENTIFICATION ---
 function showAuthStep(step) {
     document.querySelectorAll('[id^="auth-step-"]').forEach(el => el.style.display = 'none');
     document.getElementById('auth-step-' + step).style.display = 'block';
@@ -97,6 +94,7 @@ function handleRegister() {
     accounts[pseudo] = pass;
     localStorage.setItem('xono_accounts', JSON.stringify(accounts));
     
+    // Auto-connexion
     user = {name: pseudo};
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('last_logged_username', pseudo); 
@@ -115,7 +113,7 @@ function handleLogin() {
         user = {name: pseudo};
         localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('last_logged_username', pseudo);
-        location.reload(); 
+        location.reload();
     } else { 
         alert("Identifiants incorrects"); 
     }
@@ -129,21 +127,9 @@ function handleLogout() {
 }
 
 // --- BOUTIQUE & KITS ---
-
-// FONCTION MISE À JOUR : Redirection vers checkout.html
 function handlePurchase(itemName, price) {
-    if (!user) { 
-        alert("Connectez-vous pour acheter !"); 
-        openModal('login-modal'); 
-        return; 
-    }
-    
-    // Encode les données pour les passer dans l'URL
-    const encodedItem = encodeURIComponent(itemName);
-    const encodedPrice = encodeURIComponent(price);
-    
-    // Redirection vers ta page checkout
-    window.location.href = `checkout.html?item=${encodedItem}&price=${encodedPrice}`;
+    if (!user) { alert("Connectez-vous pour acheter !"); openModal('login-modal'); return; }
+    alert(`Redirection vers le paiement pour : ${itemName} (${price}€)`);
 }
 
 function updateKitPage() {
