@@ -1,5 +1,4 @@
 // --- VARIABLES GLOBALES ---
-// Récupère l'utilisateur stocké ou initialise à nul
 let user = JSON.parse(localStorage.getItem('user')) || null;
 let currentPage = 0;
 
@@ -17,13 +16,10 @@ const kits = [
 
 // --- INITIALISATION AU CHARGEMENT ---
 window.addEventListener('DOMContentLoaded', () => {
-    updateUserData();     // Met à jour l'affichage de l'utilisateur (Nav et Profil)
-    prefillLoginForm();   // Remplit le pseudo si déjà utilisé auparavant
+    updateUserData();     
+    prefillLoginForm();   
 });
 
-/**
- * Remplit automatiquement le champ login avec le dernier pseudo utilisé
- */
 function prefillLoginForm() {
     const lastUser = localStorage.getItem('last_logged_username');
     const loginUserInput = document.getElementById('login-user');
@@ -32,9 +28,6 @@ function prefillLoginForm() {
     }
 }
 
-/**
- * Gère l'affichage dynamique des éléments liés à l'utilisateur (bouton Nav, skin, pseudo)
- */
 function updateUserData() {
     const loginBtn = document.getElementById('login-btn');
     const logoutBtn = document.getElementById('logout-btn');
@@ -42,13 +35,11 @@ function updateUserData() {
     const playerSkin = document.getElementById('player-skin');
 
     if(user) {
-        // Mode Connecté
         if(loginBtn) loginBtn.innerText = user.name.toUpperCase();
         if(logoutBtn) logoutBtn.style.display = "inline-block";
         if(displayUser) displayUser.innerText = user.name;
         if(playerSkin) playerSkin.src = `https://mc-heads.net/body/${user.name}`;
     } else {
-        // Mode Visiteur
         if(loginBtn) loginBtn.innerText = "MON COMPTE";
         if(logoutBtn) logoutBtn.style.display = "none";
         if(displayUser) displayUser.innerText = "Joueur";
@@ -57,7 +48,6 @@ function updateUserData() {
 }
 
 // --- NAVIGATION ---
-
 function openModal(id) { 
     const modal = document.getElementById(id);
     if(modal) modal.style.display = "block"; 
@@ -69,7 +59,6 @@ function showSection(id) {
     if(section) {
         section.style.display = "block";
         if(hub) hub.style.filter = "blur(10px)";
-        // Si on ouvre les kits, on initialise la première page
         if(id === 'kits-section') updateKitPage();
     }
 }
@@ -80,13 +69,11 @@ function closeEverything() {
     if(hub) hub.style.filter = "none";
 }
 
-// Fermeture avec la touche Echap
 document.addEventListener('keydown', (e) => { 
     if(e.key === "Escape") closeEverything(); 
 });
 
 // --- SYSTEME D'AUTHENTIFICATION ---
-
 function showAuthStep(step) {
     document.querySelectorAll('[id^="auth-step-"]').forEach(el => el.style.display = 'none');
     document.getElementById('auth-step-' + step).style.display = 'block';
@@ -106,12 +93,10 @@ function handleRegister() {
 
     if(pass !== confirm) { alert("Les mots de passe ne correspondent pas"); return; }
     
-    // Sauvegarde locale du compte
     let accounts = JSON.parse(localStorage.getItem('xono_accounts')) || {};
     accounts[pseudo] = pass;
     localStorage.setItem('xono_accounts', JSON.stringify(accounts));
     
-    // Auto-connexion immédiate
     user = {name: pseudo};
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('last_logged_username', pseudo); 
@@ -126,12 +111,11 @@ function handleLogin() {
     const pass = document.getElementById('login-pass').value;
     const accounts = JSON.parse(localStorage.getItem('xono_accounts')) || {};
 
-    // Vérification des identifiants
     if(accounts[pseudo] && accounts[pseudo] === pass) {
         user = {name: pseudo};
         localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('last_logged_username', pseudo);
-        location.reload(); // Recharge pour appliquer les changements
+        location.reload(); 
     } else { 
         alert("Identifiants incorrects"); 
     }
@@ -146,14 +130,20 @@ function handleLogout() {
 
 // --- BOUTIQUE & KITS ---
 
+// FONCTION MISE À JOUR : Redirection vers checkout.html
 function handlePurchase(itemName, price) {
     if (!user) { 
         alert("Connectez-vous pour acheter !"); 
         openModal('login-modal'); 
         return; 
     }
-    // Ici, vous pourriez rediriger vers une URL de paiement réelle
-    alert(`Redirection vers le paiement pour : ${itemName} (${price}€)`);
+    
+    // Encode les données pour les passer dans l'URL
+    const encodedItem = encodeURIComponent(itemName);
+    const encodedPrice = encodeURIComponent(price);
+    
+    // Redirection vers ta page checkout
+    window.location.href = `checkout.html?item=${encodedItem}&price=${encodedPrice}`;
 }
 
 function updateKitPage() {
@@ -165,7 +155,6 @@ function updateKitPage() {
 }
 
 function changePage(dir) {
-    // Calcul de la page avec bouclage (modulo)
     currentPage = (currentPage + dir + kits.length) % kits.length;
     updateKitPage();
 }
