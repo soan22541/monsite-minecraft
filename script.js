@@ -1,5 +1,4 @@
 // --- VARIABLES GLOBALES ---
-// On récupère l'utilisateur au tout début
 let user = JSON.parse(localStorage.getItem('user')) || null;
 let currentPage = 0;
 
@@ -20,7 +19,6 @@ window.addEventListener('DOMContentLoaded', () => {
     prefillLoginForm();
 });
 
-// Mémoire : Remplit le champ login au démarrage
 function prefillLoginForm() {
     const lastUser = localStorage.getItem('last_logged_username');
     const loginUserInput = document.getElementById('login-user');
@@ -29,16 +27,22 @@ function prefillLoginForm() {
     }
 }
 
-// Mise à jour de l'interface (Pseudo + Skin)
 function updateUserData() {
-    if(user) {
-        const loginBtn = document.getElementById('login-btn');
-        const displayUser = document.getElementById('display-username');
-        const playerSkin = document.getElementById('player-skin');
+    const loginBtn = document.getElementById('login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const displayUser = document.getElementById('display-username');
+    const playerSkin = document.getElementById('player-skin');
 
+    if(user) {
         if(loginBtn) loginBtn.innerText = user.name.toUpperCase();
+        if(logoutBtn) logoutBtn.style.display = "inline-block";
         if(displayUser) displayUser.innerText = user.name;
         if(playerSkin) playerSkin.src = `https://mc-heads.net/body/${user.name}`;
+    } else {
+        if(loginBtn) loginBtn.innerText = "MON COMPTE";
+        if(logoutBtn) logoutBtn.style.display = "none";
+        if(displayUser) displayUser.innerText = "Joueur";
+        if(playerSkin) playerSkin.src = `https://mc-heads.net/body/Steve`;
     }
 }
 
@@ -64,15 +68,11 @@ function closeEverything() {
     if(hub) hub.style.filter = "none";
 }
 
-document.addEventListener('keydown', (e) => { 
-    if(e.key === "Escape") closeEverything(); 
-});
+document.addEventListener('keydown', (e) => { if(e.key === "Escape") closeEverything(); });
 
 // --- AUTHENTIFICATION ---
 function showAuthStep(step) {
-    document.getElementById('auth-step-1').style.display = 'none';
-    document.getElementById('auth-step-2').style.display = 'none';
-    document.getElementById('auth-step-3').style.display = 'none';
+    document.querySelectorAll('[id^="auth-step-"]').forEach(el => el.style.display = 'none');
     document.getElementById('auth-step-' + step).style.display = 'block';
 }
 
@@ -90,18 +90,15 @@ function handleRegister() {
 
     if(pass !== confirm) { alert("Les mots de passe ne correspondent pas"); return; }
     
-    // Sauvegarde du compte
     let accounts = JSON.parse(localStorage.getItem('xono_accounts')) || {};
     accounts[pseudo] = pass;
     localStorage.setItem('xono_accounts', JSON.stringify(accounts));
     
-    // AUTO-CONNEXION ICI
-    const userData = {name: pseudo};
-    localStorage.setItem('user', JSON.stringify(userData));
+    // Auto-connexion
+    user = {name: pseudo};
+    localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('last_logged_username', pseudo); 
     
-    // On force la mise à jour avant de fermer
-    user = userData;
     updateUserData();
     closeEverything();
     alert("Compte créé et connecté !");
@@ -113,21 +110,25 @@ function handleLogin() {
     const accounts = JSON.parse(localStorage.getItem('xono_accounts')) || {};
 
     if(accounts[pseudo] && accounts[pseudo] === pass) {
-        localStorage.setItem('user', JSON.stringify({name: pseudo}));
+        user = {name: pseudo};
+        localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('last_logged_username', pseudo);
-        location.reload(); // Recharge pour appliquer partout
+        location.reload();
     } else { 
         alert("Identifiants incorrects"); 
     }
 }
 
+function handleLogout() {
+    localStorage.removeItem('user');
+    user = null;
+    alert("Vous avez été déconnecté.");
+    location.reload();
+}
+
 // --- BOUTIQUE & KITS ---
 function handlePurchase(itemName, price) {
-    if (!user) {
-        alert("Connectez-vous pour acheter !");
-        openModal('login-modal'); 
-        return;
-    }
+    if (!user) { alert("Connectez-vous pour acheter !"); openModal('login-modal'); return; }
     alert(`Redirection vers le paiement pour : ${itemName} (${price}€)`);
 }
 
