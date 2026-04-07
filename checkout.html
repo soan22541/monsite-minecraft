@@ -2,77 +2,90 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Validation de Commande | XonoHub</title>
+    <title>Paiement Sécurisé | XonoHub</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        .checkout-container { max-width: 500px; margin: 50px auto; background: #1c1e26; padding: 30px; border-radius: 15px; border: 1px solid #3498db; text-align: center; }
-        .item-summary { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-bottom: 25px; }
-        .btn-confirm { background: #2ecc71; color: white; border: none; padding: 15px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; }
-        .instruction { font-size: 14px; color: #aaa; margin: 20px 0; line-height: 1.5; }
+        .checkout-container { 
+            max-width: 500px; 
+            margin: 50px auto; 
+            background: #1c1e26; 
+            padding: 30px; 
+            border-radius: 15px; 
+            border: 1px solid #3498db; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .item-summary { 
+            background: rgba(0,0,0,0.3); 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin-bottom: 25px; 
+            text-align: center; 
+        }
+        .secure-notice { font-size: 12px; color: #666; text-align: center; margin-top: 20px; }
+        .back-link { 
+            display: block; 
+            text-align: center; 
+            margin-top: 15px; 
+            color: #3498db; 
+            text-decoration: none; 
+            font-size: 13px;
+        }
     </style>
 </head>
 <body style="background: #0d0e12; color: white; font-family: 'Poppins';">
 
     <div class="checkout-container">
-        <h2>Finaliser l'achat</h2>
+        <h2 style="text-align: center;">Finaliser la commande</h2>
         
         <div class="item-summary">
-            <p style="color: #3498db; margin: 0;">Article :</p>
+            <p style="color: #3498db; font-size: 14px; margin: 0;">Produit sélectionné :</p>
             <h3 id="display-item">Chargement...</h3>
             <div style="font-size: 24px; font-weight: 800; color: #2ecc71;" id="display-price">0.00€</div>
         </div>
 
-        <p class="instruction">
-            En cliquant sur le bouton ci-dessous, une demande sera envoyée au staff. <br>
-            <strong>Préparez votre moyen de paiement (Paysafecard, Lydia, etc.)</strong>
-        </p>
+        <div id="paypal-button-container"></div>
 
-        <button id="confirm-order" class="btn-confirm">ENVOYER LA DEMANDE</button>
-
-        <a href="index.html" style="display:block; margin-top:15px; color:#666; text-decoration:none; font-size:12px;">Annuler</a>
+        <a href="index.html" class="back-link">← Retour au Hub</a>
+        <p class="secure-notice">🔒 Paiement sécurisé et traité par PayPal</p>
     </div>
 
+    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=EUR"></script>
+
     <script>
-        // 1. Config Webhook (A REMPLIR)
-        const DISCORD_WEBHOOK = "TON_LIEN_WEBHOOK_ICI";
-
-        // 2. Récupération infos
+        // 1. Récupération des infos envoyées par le Hub (script.js)
         const params = new URLSearchParams(window.location.search);
-        const item = params.get('item') || "Grade Inconnu";
-        const price = params.get('price') || "0.00";
-        const user = JSON.parse(localStorage.getItem('user')) || {name: "Inconnu"};
+        const itemName = params.get('item') || "Grade Serveur";
+        const itemPrice = params.get('price') || "0.00";
 
-        document.getElementById('display-item').innerText = item;
-        document.getElementById('display-price').innerText = price + "€";
+        // 2. Affichage des infos sur la page
+        document.getElementById('display-item').innerText = itemName;
+        document.getElementById('display-price').innerText = itemPrice + "€";
 
-        // 3. Envoi de la commande sur Discord
-        document.getElementById('confirm-order').onclick = function() {
-            const message = {
-                embeds: [{
-                    title: "🔔 NOUVELLE COMMANDE À TRAITER",
-                    color: 15844367, // Or
-                    description: "Un joueur veut acheter un grade. Contactez-le pour le paiement !",
-                    fields: [
-                        { name: "Joueur", value: user.name, inline: true },
-                        { name: "Article", value: item, inline: true },
-                        { name: "Prix à partager", value: price + "€", inline: true },
-                        { name: "Part par personne", value: (parseFloat(price) / 2).toFixed(2) + "€", inline: false }
-                    ],
-                    footer: { text: "XonoHub Logistique" },
-                    timestamp: new Date()
-                }]
-            };
-
-            fetch(DISCORD_WEBHOOK, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(message)
-            }).then(() => {
-                alert("Demande envoyée ! Le staff va te contacter sur le serveur ou Discord pour finaliser le partage.");
-                window.location.href = "index.html";
-            });
-        };
+        // 3. Configuration du bouton PayPal
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        description: itemName,
+                        amount: {
+                            currency_code: "EUR",
+                            value: itemPrice
+                        }
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    alert('Merci ' + details.payer.name.given_name + ' ! Ton achat a été validé.');
+                    // Redirection vers le hub après succès
+                    window.location.href = "index.html?status=success";
+                });
+            },
+            onError: function (err) {
+                alert("Le paiement n'a pas pu aboutir. Veuillez réessayer.");
+            }
+        }).render('#paypal-button-container');
     </script>
 </body>
 </html>
