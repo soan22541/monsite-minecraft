@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XonoSMP | Officiel</title>
+    <title>XonoHub | Officiel</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
@@ -22,6 +22,7 @@
 
     <main class="hub" id="main-hub">
         <div class="grid-container">
+            <div class="card smp-btn" onclick="showSection('smp-section')">SMP</div>
             <div class="card pvp-btn" onclick="showSection('kits-section')">PVP</div>
             <div class="card bot-btn">PVP BOT TRAINING</div>
             <div class="card shop-btn" onclick="showSection('shop-section')">BOUTIQUE</div>
@@ -108,6 +109,42 @@
             <button onclick="closeEverything()" class="btn-close-join">FERMER</button>
         </div>
     </div>
+
+    <section id="smp-section" class="overlay-section">
+        <div class="smp-center-wrapper">
+            <div class="smp-layout">
+                <div class="skin-side">
+                    <img src="https://mc-heads.net/body/Steve" id="player-skin">
+                    <h2 id="display-username">Joueur</h2>
+                    <div class="status-badge">● EN LIGNE</div>
+                </div>
+                <div class="stats-side">
+                    <div class="stat-group">
+                        <h3>COORDONNÉES</h3>
+                        <div class="coord-grid">
+                            <div class="box"><span>X</span><div id="coord-x">1402</div></div>
+                            <div class="box"><span>Y</span><div id="coord-y">64</div></div>
+                            <div class="box"><span>Z</span><div id="coord-z">-892</div></div>
+                        </div>
+                    </div>
+                    <div class="stat-group">
+                        <h3>INVENTAIRE</h3>
+                        <div class="inventory-grid">
+                            <div class="slot"><img src="https://minecraft.wiki/images/Netherite_Sword_JE2_BE2.png"></div>
+                            <div class="slot"></div><div class="slot"></div><div class="slot"></div>
+                            <div class="slot"></div><div class="slot"></div><div class="slot"></div>
+                            <div class="slot"></div><div class="slot"></div>
+                        </div>
+                    </div>
+                    <div class="stat-group">
+                        <h3>ARGENT</h3>
+                        <div class="money-box">12,500.00 <small>Xocoins</small></div>
+                    </div>
+                </div>
+            </div>
+            <p class="hint">Appuyez sur <span>ECHAP</span> pour quitter</p>
+        </div>
+    </section>
 
     <section id="kits-section" class="overlay-section">
         <div class="kit-page-container">
