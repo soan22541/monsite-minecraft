@@ -1,128 +1,58 @@
-:root {
-    --bg: #0d0e12;
-    --primary: #3498db;
-    --accent: #e74c3c;
-    --card: #1c1e26;
-    --text: #ffffff;
-    --success: #2ecc71;
+let user = JSON.parse(localStorage.getItem('user')) || null;
+
+window.addEventListener('DOMContentLoaded', () => {
+    updateUserData();
+    if(user) syncMinecraftData();
+});
+
+// SYNCHRONISATION AVEC LE SERVEUR (data.json)
+async function syncMinecraftData() {
+    try {
+        const response = await fetch('data.json?t=' + Date.now());
+        const data = await response.json();
+
+        // Mise à jour du pseudo et du statut
+        document.getElementById('display-username').innerText = data.pseudo;
+        
+        const statusBadge = document.getElementById('player-status');
+        if (statusBadge) {
+            statusBadge.style.background = data.online ? "#2ecc71" : "#e74c3c";
+            statusBadge.innerText = data.online ? "● EN LIGNE" : "● HORS LIGNE";
+        }
+
+        // Mise à jour du Skin
+        const skinImg = document.getElementById('player-skin');
+        if (skinImg) skinImg.src = `https://mc-heads.net/body/${data.pseudo}`;
+
+    } catch (err) {
+        console.warn("Erreur de synchro : data.json introuvable.");
+    }
 }
 
-body { 
-    margin: 0; 
-    font-family: 'Poppins', sans-serif; 
-    background: var(--bg); 
-    color: var(--text); 
-    overflow: hidden; 
+function updateUserData() {
+    const loginBtn = document.getElementById('login-btn');
+    if(user && loginBtn) {
+        loginBtn.innerText = user.name.toUpperCase();
+        document.getElementById('logout-btn').style.display = "inline-block";
+    }
 }
 
-/* NAVIGATION */
-nav { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    padding: 15px 50px; 
-    background: rgba(0,0,0,0.9); 
-    border-bottom: 2px solid var(--primary); 
-    position: relative;
-    z-index: 10;
+// NAVIGATION
+function showSection(id) {
+    closeEverything(); 
+    const section = document.getElementById(id);
+    if(section) {
+        section.style.display = "block";
+        document.getElementById('main-hub').style.filter = "blur(10px)";
+        if(id === 'smp-section') syncMinecraftData();
+    }
 }
 
-.logo { font-weight: 800; font-size: 24px; }
-.logo span { color: var(--primary); }
+function openModal(id) { document.getElementById(id).style.display = "block"; }
 
-.btn-join-nav { 
-    background: var(--primary); 
-    color: white; 
-    border: none; 
-    padding: 12px 40px; 
-    border-radius: 50px; 
-    font-weight: 800; 
-    cursor: pointer; 
-    box-shadow: 0 0 20px rgba(52, 152, 219, 0.4); 
+function closeEverything() {
+    document.querySelectorAll('.overlay-section, .modal').forEach(el => el.style.display = 'none');
+    document.getElementById('main-hub').style.filter = "none";
 }
 
-.auth-buttons { display: flex; gap: 10px; }
-.btn-account { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-
-/* HUB GRID */
-.grid-container { 
-    display: grid; 
-    grid-template-columns: repeat(4, 1fr); 
-    gap: 25px; 
-    max-width: 1100px; 
-    margin: 100px auto; 
-}
-
-.card { 
-    background: var(--card); 
-    height: 200px; 
-    border-radius: 20px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    font-weight: 800; 
-    cursor: pointer; 
-    border: 1px solid #333; 
-    transition: 0.3s; 
-}
-
-.card:hover { transform: translateY(-10px); border-color: var(--primary); }
-
-/* SECTION SMP (SKIN SEUL) */
-.overlay-section { 
-    display: none; 
-    position: fixed; 
-    top: 0; left: 0; 
-    width: 100%; height: 100%; 
-    background: rgba(10,11,14,0.98); 
-    z-index: 100; 
-    padding: 60px; 
-    box-sizing: border-box; 
-}
-
-.smp-center-wrapper { 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center; 
-    height: 100%; 
-}
-
-.smp-layout-simple { 
-    background: var(--card); 
-    padding: 60px; 
-    border-radius: 30px; 
-    border: 1px solid #444; 
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
-}
-
-.skin-only-container { text-align: center; }
-.skin-only-container img { 
-    height: 450px; 
-    filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6)); 
-    margin-bottom: 20px; 
-}
-
-.status-badge { 
-    background: var(--success); 
-    color: #000; 
-    font-size: 12px; 
-    font-weight: 900; 
-    padding: 6px 20px; 
-    border-radius: 20px; 
-}
-
-/* MODALS */
-.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; }
-.modal-auth-container, .modal-join-content { 
-    background: #16171b; 
-    width: 450px; 
-    margin: 10% auto; 
-    padding: 40px; 
-    border-radius: 15px; 
-    border: 1px solid #333; 
-    text-align: center; 
-}
-
-.hint { margin-top: 20px; color: #666; font-size: 14px; text-align: center; }
-.hint span { background: #333; padding: 2px 8px; border-radius: 4px; color: #fff; }
+document.addEventListener('keydown', (e) => { if(e.key === "Escape") closeEverything(); });
