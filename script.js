@@ -9,7 +9,40 @@ const kits = [
 
 window.addEventListener('DOMContentLoaded', () => {
     updateUserData();
+    syncMinecraftData(); // Lance la synchro au démarrage
 });
+
+// SYNCHRONISATION DES DONNÉES MINECRAFT (data.json)
+async function syncMinecraftData() {
+    try {
+        const response = await fetch('data.json?t=' + Date.now());
+        const data = await response.json();
+
+        // On met à jour les éléments du SMP Section uniquement si on est connecté ou si c'est le profil de base
+        if (document.getElementById('coord-x')) {
+            document.getElementById('coord-x').innerText = data.x;
+            document.getElementById('coord-y').innerText = data.y;
+            document.getElementById('coord-z').innerText = data.z;
+        }
+
+        // Argent
+        const moneyDisplay = document.querySelector('.money-box');
+        if (moneyDisplay) {
+            moneyDisplay.innerHTML = `${data.xocoins.toLocaleString()} <small>Xocoins</small>`;
+        }
+
+        // Statut en ligne
+        const statusBadge = document.querySelector('.status-badge');
+        if (statusBadge) {
+            statusBadge.style.color = data.online ? "#2ecc71" : "#e74c3c";
+            statusBadge.innerText = data.online ? "● EN LIGNE" : "● HORS LIGNE";
+        }
+        
+        console.log("Données synchronisées avec succès");
+    } catch (err) {
+        console.warn("data.json non trouvé ou erreur de lecture.");
+    }
+}
 
 function updateUserData() {
     const loginBtn = document.getElementById('login-btn');
@@ -21,6 +54,7 @@ function updateUserData() {
         if(loginBtn) loginBtn.innerText = user.name.toUpperCase();
         if(logoutBtn) logoutBtn.style.display = "inline-block";
         if(displayUser) displayUser.innerText = user.name;
+        // On récupère le skin du joueur connecté
         if(playerSkin) playerSkin.src = `https://mc-heads.net/body/${user.name}`;
     }
 }
@@ -29,11 +63,13 @@ function updateUserData() {
 function openModal(id) { document.getElementById(id).style.display = "block"; }
 
 function showSection(id) {
-    closeEverything(); // Ferme les autres avant d'ouvrir
+    closeEverything(); 
     const section = document.getElementById(id);
     if(section) {
         section.style.display = "block";
         document.getElementById('main-hub').style.filter = "blur(10px)";
+        // Si on ouvre le SMP, on rafraîchit les données
+        if(id === 'smp-section') syncMinecraftData();
     }
 }
 
@@ -49,7 +85,6 @@ function handlePurchase(itemName, price) {
         openModal('login-modal'); 
         return; 
     }
-    // Encode pour l'URL et redirige
     const name = encodeURIComponent(itemName);
     window.location.href = `checkout.html?item=${name}&price=${price}`;
 }
