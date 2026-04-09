@@ -272,16 +272,6 @@ nav {
 .stats-side { display: flex; flex-direction: column; gap: 20px; }
 .stat-group h3 { font-size: 14px; color: var(--primary); margin-bottom: 10px; }
 
-.coord-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.box { background: #000; padding: 15px; border-radius: 10px; border: 1px solid #333; text-align: center; }
-.box span { color: var(--primary); font-weight: 800; display: block; }
-
-.inventory-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 5px; }
-.slot { width: 40px; height: 40px; background: #222; border: 1px solid #444; display: flex; align-items: center; justify-content: center; }
-.slot img { width: 25px; }
-
-.money-box { background: #111; padding: 15px; border-radius: 10px; font-size: 24px; font-weight: 800; color: #f1c40f; border: 1px dashed #f1c40f; }
-
 /* --- SECTION KITS --- */
 .kit-page-container { display: flex; align-items: center; justify-content: center; height: 80vh; gap: 40px; }
 
