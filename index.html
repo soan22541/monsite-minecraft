@@ -42,43 +42,70 @@
         </div>
     </section>
 
+    <section id="kits-section" class="overlay-section">
+        <div class="kit-page-container">
+            <button class="nav-arrow" onclick="changePage(-1)">&#10094;</button>
+            <div class="kit-display" id="kit-content">
+                <img id="kit-img" src="images/crystal.png">
+                <h2 id="kit-title">Crystal PvP</h2>
+                <div class="kit-desc-box"><p id="kit-desc">Combat explosif.</p></div>
+                <p class="page-counter"><span id="current-p">1</span> / 3</p>
+            </div>
+            <button class="nav-arrow" onclick="changePage(1)">&#10095;</button>
+        </div>
+        <p class="hint">Appuyez sur <span>ECHAP</span> pour quitter</p>
+    </section>
+
+    <section id="shop-section" class="overlay-section">
+        <div class="shop-wrapper">
+            <h2 class="shop-main-title">Boutique Officielle</h2>
+            <div class="shop-grid">
+                <div class="shop-card">
+                    <h3>Grade VIP</h3>
+                    <div class="price">5.00€</div>
+                    <ul class="features">
+                        <li>Pseudo en bleu</li>
+                        <li>Accès au /fly</li>
+                        <li>Kit hebdomadaire</li>
+                    </ul>
+                    <button class="btn-buy" onclick="handlePurchase('Grade VIP', 5.00)">Acheter</button>
+                </div>
+                <div class="shop-card popular">
+                    <div class="popular-badge">Populaire</div>
+                    <h3>Grade VIP+</h3>
+                    <div class="price">10.00€</div>
+                    <ul class="features">
+                        <li>Tous les avantages VIP</li>
+                        <li>Accès aux montures</li>
+                        <li>Priorité file d'attente</li>
+                    </ul>
+                    <button class="btn-buy" onclick="handlePurchase('Grade VIP+', 10.00)">Acheter</button>
+                </div>
+            </div>
+            <p class="hint">Appuyez sur <span>ECHAP</span> pour quitter</p>
+        </div>
+    </section>
+
     <div id="login-modal" class="modal">
         <div class="modal-auth-container">
-            <div id="auth-step-1" class="auth-card">
-                <h1>Bienvenue sur <span>Xono Hub</span></h1>
-                <button class="btn-main-auth" onclick="showAuthStep(2)">+ Créer un compte</button>
-                <div class="auth-separator">OU</div>
-                <div class="login-row">
-                    <div class="input-group">
-                        <input type="text" id="login-user" placeholder="Pseudo">
-                    </div>
-                    <div class="input-group">
-                        <input type="password" id="login-pass" placeholder="••••••••">
-                    </div>
-                    <button class="btn-submit-auth" onclick="handleLogin()">Connexion</button>
-                </div>
-                <p class="auth-footer" onclick="closeEverything()">Annuler</p>
+            <h1>Connexion</h1>
+            <div class="login-row">
+                <input type="text" id="login-user" placeholder="Pseudo">
+                <input type="password" id="login-pass" placeholder="••••">
+                <button class="btn-submit-auth" onclick="handleLogin()">OK</button>
             </div>
+            <p onclick="closeEverything()" style="cursor:pointer; margin-top:20px;">Fermer</p>
         </div>
     </div>
 
     <div id="join-modal" class="modal">
         <div class="modal-join-content">
-            <h1 class="join-title">REJOINDRE</h1>
-            <div class="join-container-box">
-                <div class="join-row-info">
-                    <span class="join-label">JAVA EDITION</span>
-                    <span class="join-value">xonosmp.falix.pro</span>
-                </div>
-                <div class="join-separator-line"></div>
-                <div class="join-row-info">
-                    <span class="join-label">BEDROCK EDITION</span>
-                    <span class="join-value">xonosmp.falix.pro:27154</span>
-                </div>
-            </div>
+            <h1>REJOINDRE</h1>
+            <p>JAVA: <b>xonosmp.falix.pro</b></p>
+            <p>BEDROCK: <b>Port 27154</b></p>
             <button onclick="closeEverything()" class="btn-close-join">FERMER</button>
         </div>
-    </section>
+    </div>
 
     <script src="script.js"></script>
 </body>
