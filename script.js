@@ -1,206 +1,146 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XonoHub | Officiel</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-</head>
-<body>
+// --- VARIABLES GLOBALES ---
+let user = JSON.parse(localStorage.getItem('user')) || null;
+let currentPage = 0;
 
-    <nav>
-        <div class="logo">Xono<span>Hub</span></div>
-        <div class="nav-center">
-            <button class="btn-join-nav" onclick="openModal('join-modal')">REJOINDRE LE SERVEUR</button>
-        </div>
-        <div class="auth-buttons">
-            <button id="login-btn" class="btn-account" onclick="openModal('login-modal')">MON COMPTE</button>
-            <button id="logout-btn" class="btn-logout" onclick="handleLogout()" style="display:none;">DÉCONNEXION</button>
-        </div>
-    </nav>
+const kits = [
+    { title: "Crystal PvP", img: "images/crystal.png", desc: "Combat explosif." },
+    { title: "SMP Starter", img: "images/smp.png", desc: "Début de survie." },
+    { title: "Mace Kit", img: "https://minecraft.wiki/images/Mace_JE1_BE1.png", desc: "Attaques lourdes." },
+    { title: "Netherite Sword", img: "https://minecraft.wiki/images/Netherite_Sword_JE2_BE2.png", desc: "Classique." },
+    { title: "Netherite Axe", img: "https://minecraft.wiki/images/Netherite_Axe_JE2_BE2.png", desc: "Brise-bouclier." },
+    { title: "UHC", img: "https://minecraft.wiki/images/Golden_Apple_JE2_BE2.png", desc: "Pas de regen." },
+    { title: "Netherite Pot", img: "https://minecraft.wiki/images/Splash_Potion_of_Healing_JE2_BE2.png", desc: "Potions de soin." },
+    { title: "Diamond Pot", img: "https://minecraft.wiki/images/Diamond_Chestplate_JE3_BE2.png", desc: "Vitesse et diamant." }
+];
 
-    <main class="hub" id="main-hub">
-        <div class="grid-container">
-            <div class="card smp-btn" onclick="showSection('smp-section')">SMP</div>
-            <div class="card pvp-btn" onclick="showSection('kits-section')">PVP</div>
-            <div class="card bot-btn">PVP BOT TRAINING</div>
-            <div class="card shop-btn" onclick="showSection('shop-section')">BOUTIQUE</div>
-        </div>
-    </main>
+// --- INITIALISATION ---
+window.addEventListener('DOMContentLoaded', () => {
+    updateUserData();
+    prefillLoginForm();
+});
 
-    <div id="login-modal" class="modal">
-        <div class="modal-auth-container">
-            <div id="auth-step-1" class="auth-card">
-                <h1>Bienvenue sur <span>Xono Hub</span></h1>
-                <button class="btn-main-auth" onclick="showAuthStep(2)">+ Créer un compte</button>
-                <div class="auth-separator">OU</div>
-                <div class="login-row">
-                    <div class="input-group">
-                        <label>Identifiez-vous</label>
-                        <div class="input-with-icon">
-                            <input type="text" id="login-user" placeholder="Nom d'utilisateur">
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label>&nbsp;</label>
-                        <div class="input-with-icon">
-                            <input type="password" id="login-pass" placeholder="••••••••">
-                        </div>
-                    </div>
-                    <button class="btn-submit-auth" onclick="handleLogin()">Identifiez-vous</button>
-                </div>
-                <p class="auth-footer" onclick="closeEverything()">Annuler</p>
-            </div>
+function prefillLoginForm() {
+    const lastUser = localStorage.getItem('last_logged_username');
+    const loginUserInput = document.getElementById('login-user');
+    if (lastUser && loginUserInput) {
+        loginUserInput.value = lastUser;
+    }
+}
 
-            <div id="auth-step-2" class="auth-card" style="display:none;">
-                <h1>Créer un compte</h1>
-                <div class="input-group full">
-                    <label>Choisissez un nom d'utilisateur</label>
-                    <input type="text" id="reg-user" placeholder="Nom d'utilisateur">
-                    <span id="user-error" class="error-msg"></span>
-                </div>
-                <div class="check-group">
-                    <input type="checkbox" id="check-tos">
-                    <label for="check-tos">J'accepte les conditions d'utilisation</label>
-                </div>
-                <div class="check-group">
-                    <input type="checkbox" id="check-data">
-                    <label for="check-data">J'accepte que mes données soient stockées</label>
-                </div>
-                <div class="auth-nav">
-                    <button class="btn-text" onclick="showAuthStep(1)">X Annuler</button>
-                    <button class="btn-next" onclick="validateStep2()">Suivant ></button>
-                </div>
-            </div>
+function updateUserData() {
+    const loginBtn = document.getElementById('login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const displayUser = document.getElementById('display-username');
+    const playerSkin = document.getElementById('player-skin');
 
-            <div id="auth-step-3" class="auth-card" style="display:none;">
-                <h1>Créer votre compte</h1>
-                <div class="input-group full">
-                    <label>Mot de passe</label>
-                    <input type="password" id="reg-pass" placeholder="••••••••••••">
-                </div>
-                <div class="input-group full">
-                    <label>Retapez le mot de passe</label>
-                    <input type="password" id="reg-pass-confirm" placeholder="••••••••••••">
-                </div>
-                <div class="auth-nav">
-                    <button class="btn-text" onclick="showAuthStep(2)"> < Précédent</button>
-                    <button class="btn-submit-final" onclick="handleRegister()">Créer un compte</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    if(user) {
+        if(loginBtn) loginBtn.innerText = user.name.toUpperCase();
+        if(logoutBtn) logoutBtn.style.display = "inline-block";
+        if(displayUser) displayUser.innerText = user.name;
+        if(playerSkin) playerSkin.src = `https://mc-heads.net/body/${user.name}`;
+    } else {
+        if(loginBtn) loginBtn.innerText = "MON COMPTE";
+        if(logoutBtn) logoutBtn.style.display = "none";
+        if(displayUser) displayUser.innerText = "Joueur";
+        if(playerSkin) playerSkin.src = `https://mc-heads.net/body/Steve`;
+    }
+}
 
-    <div id="join-modal" class="modal">
-        <div class="modal-join-content">
-            <h1 class="join-title">REJOINDRE</h1>
-            <div class="join-container-box">
-                <div class="join-row-info">
-                    <span class="join-label">JAVA EDITION</span>
-                    <span class="join-value">xonosmp.falix.pro</span>
-                </div>
-                <div class="join-separator-line"></div>
-                <div class="join-row-info">
-                    <span class="join-label">BEDROCK EDITION</span>
-                    <span class="join-value">xonosmp.falix.pro:27154</span>
-                </div>
-            </div>
-            <button onclick="closeEverything()" class="btn-close-join">FERMER</button>
-        </div>
-    </div>
+// --- NAVIGATION ---
+function openModal(id) { 
+    const modal = document.getElementById(id);
+    if(modal) modal.style.display = "block"; 
+}
 
-    <section id="smp-section" class="overlay-section">
-        <div class="smp-center-wrapper">
-            <div class="smp-layout">
-                <div class="skin-side">
-                    <img src="https://mc-heads.net/body/Steve" id="player-skin">
-                    <h2 id="display-username">Joueur</h2>
-                    <div class="status-badge">● EN LIGNE</div>
-                </div>
-                <div class="stats-side">
-                    <div class="stat-group">
-                        <h3>COORDONNÉES</h3>
-                        <div class="coord-grid">
-                            <div class="box"><span>X</span><div id="coord-x">1402</div></div>
-                            <div class="box"><span>Y</span><div id="coord-y">64</div></div>
-                            <div class="box"><span>Z</span><div id="coord-z">-892</div></div>
-                        </div>
-                    </div>
-                    <div class="stat-group">
-                        <h3>INVENTAIRE</h3>
-                        <div class="inventory-grid">
-                            <div class="slot"><img src="https://minecraft.wiki/images/Netherite_Sword_JE2_BE2.png"></div>
-                            <div class="slot"></div><div class="slot"></div><div class="slot"></div>
-                            <div class="slot"></div><div class="slot"></div><div class="slot"></div>
-                            <div class="slot"></div><div class="slot"></div>
-                        </div>
-                    </div>
-                    <div class="stat-group">
-                        <h3>ARGENT</h3>
-                        <div class="money-box">12,500.00 <small>Xocoins</small></div>
-                    </div>
-                </div>
-            </div>
-            <p class="hint">Appuyez sur <span>ECHAP</span> pour quitter</p>
-        </div>
-    </section>
+function showSection(id) {
+    const section = document.getElementById(id);
+    const hub = document.getElementById('main-hub');
+    if(section) {
+        section.style.display = "block";
+        if(hub) hub.style.filter = "blur(10px)";
+        if(id === 'kits-section') updateKitPage();
+    }
+}
 
-    <section id="kits-section" class="overlay-section">
-        <div class="kit-page-container">
-            <button class="nav-arrow" onclick="changePage(-1)">&#10094;</button>
-            <div class="kit-display" id="kit-content">
-                <img id="kit-img" src="">
-                <h2 id="kit-title"></h2>
-                <div class="kit-desc-box"><p id="kit-desc"></p></div>
-                <p class="page-counter"><span id="current-p">1</span> / 8</p>
-            </div>
-            <button class="nav-arrow" onclick="changePage(1)">&#10095;</button>
-        </div>
-    </section>
+function closeEverything() {
+    document.querySelectorAll('.overlay-section, .modal').forEach(el => el.style.display = 'none');
+    const hub = document.getElementById('main-hub');
+    if(hub) hub.style.filter = "none";
+}
 
-    <section id="shop-section" class="overlay-section">
-        <div class="shop-wrapper">
-            <h2 class="shop-main-title">Boutique Officielle</h2>
-            <div class="shop-grid">
-                <div class="shop-card">
-                    <h3>Grade VIP</h3>
-                    <div class="price">5.00€</div>
-                    <ul class="features">
-                        <li>Pseudo en bleu</li>
-                        <li>Accès au /fly</li>
-                        <li>Kit hebdomadaire</li>
-                    </ul>
-                    <button class="btn-buy" onclick="handlePurchase('Grade VIP', 5.00)">Acheter</button>
-                </div>
+document.addEventListener('keydown', (e) => { if(e.key === "Escape") closeEverything(); });
 
-                <div class="shop-card popular">
-                    <div class="popular-badge">Populaire</div>
-                    <h3>Grade VIP+</h3>
-                    <div class="price">10.00€</div>
-                    <ul class="features">
-                        <li>Tous les avantages VIP</li>
-                        <li>Accès aux montures</li>
-                        <li>Priorité file d'attente</li>
-                    </ul>
-                    <button class="btn-buy" onclick="handlePurchase('Grade VIP+', 10.00)">Acheter</button>
-                </div>
+// --- AUTHENTIFICATION ---
+function showAuthStep(step) {
+    document.querySelectorAll('[id^="auth-step-"]').forEach(el => el.style.display = 'none');
+    document.getElementById('auth-step-' + step).style.display = 'block';
+}
 
-                <div class="shop-card">
-                    <h3>Grade ÉLITE</h3>
-                    <div class="price">20.00€</div>
-                    <ul class="features">
-                        <li>Tous les avantages VIP+</li>
-                        <li>Grade à vie</li>
-                        <li>Accès serveur de test</li>
-                    </ul>
-                    <button class="btn-buy" onclick="handlePurchase('Grade ÉLITE', 20.00)">Acheter</button>
-                </div>
-            </div>
-            <p class="hint">Appuyez sur <span>ECHAP</span> pour retourner au Hub</p>
-        </div>
-    </section>
+function validateStep2() {
+    const pseudo = document.getElementById('reg-user').value;
+    if(pseudo.length < 3) { alert("Pseudo trop court !"); return; }
+    if(!document.getElementById('check-tos').checked) { alert("Acceptez les conditions !"); return; }
+    showAuthStep(3);
+}
 
-    <script src="script.js"></script>
-</body>
-</html>
+function handleRegister() {
+    const pseudo = document.getElementById('reg-user').value;
+    const pass = document.getElementById('reg-pass').value;
+    const confirm = document.getElementById('reg-pass-confirm').value;
+
+    if(pass !== confirm) { alert("Les mots de passe ne correspondent pas"); return; }
+    
+    let accounts = JSON.parse(localStorage.getItem('xono_accounts')) || {};
+    accounts[pseudo] = pass;
+    localStorage.setItem('xono_accounts', JSON.stringify(accounts));
+    
+    // Auto-connexion
+    user = {name: pseudo};
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('last_logged_username', pseudo); 
+    
+    updateUserData();
+    closeEverything();
+    alert("Compte créé et connecté !");
+}
+
+function handleLogin() {
+    const pseudo = document.getElementById('login-user').value;
+    const pass = document.getElementById('login-pass').value;
+    const accounts = JSON.parse(localStorage.getItem('xono_accounts')) || {};
+
+    if(accounts[pseudo] && accounts[pseudo] === pass) {
+        user = {name: pseudo};
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('last_logged_username', pseudo);
+        location.reload();
+    } else { 
+        alert("Identifiants incorrects"); 
+    }
+}
+
+function handleLogout() {
+    localStorage.removeItem('user');
+    user = null;
+    alert("Vous avez été déconnecté.");
+    location.reload();
+}
+
+// --- BOUTIQUE & KITS ---
+function handlePurchase(itemName, price) {
+    if (!user) { alert("Connectez-vous pour acheter !"); openModal('login-modal'); return; }
+    alert(`Redirection vers le paiement pour : ${itemName} (${price}€)`);
+}
+
+function updateKitPage() {
+    const kit = kits[currentPage];
+    document.getElementById('kit-img').src = kit.img;
+    document.getElementById('kit-title').innerText = kit.title;
+    document.getElementById('kit-desc').innerText = kit.desc;
+    document.getElementById('current-p').innerText = currentPage + 1;
+}
+
+function changePage(dir) {
+    currentPage = (currentPage + dir + kits.length) % kits.length;
+    updateKitPage();
+}
